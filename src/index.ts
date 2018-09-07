@@ -33,7 +33,14 @@ function build(builder: Promise<IDataset>) {
       const input = (<HTMLElement>side.querySelector('input'));
       input.insertAdjacentHTML('afterend', `<span class="lever"></span>`);
       input.insertAdjacentHTML('beforebegin', `<span>Item</span>`);
-    } //
+    }
+    const expand = <HTMLElement>document.querySelector('.lu-expand-button-chooser');
+    if (expand) {
+      expand.classList.add('switch');
+      const input = (<HTMLElement>expand.querySelector('input'));
+      input.insertAdjacentHTML('afterend', `<span class="lever"></span>`);
+      input.insertAdjacentHTML('beforebegin', `<span>Overview</span>`);
+    }
     (<HTMLElement>document.querySelector('.brand-logo')).textContent = document.title = `LineUp ${shared.dataset!.title}`;
     Array.from(document.querySelectorAll('.nav-wrapper a.disabled')).forEach((d: Element) => {
       (<HTMLElement>d).classList.remove('disabled');
