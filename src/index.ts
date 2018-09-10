@@ -2,9 +2,7 @@ import 'materialize-css';
 import 'file-loader?name=index.html!extract-loader!html-loader?interpolate!./index.html';
 import './assets/favicon/favicon';
 import './style.scss';
-import 'font-awesome/css/font-awesome.css';
 import * as $ from 'jquery';
-import 'lineupjs/build/LineUpJS.css';
 import initExport from './export';
 import shared from './shared';
 import data, {toCard, IDataset, fromFile} from './data';
@@ -83,9 +81,13 @@ function showFile(file: File) {
 }
 
 window.addEventListener('resize', () => {
-  if (shared.lineup) {
-    shared.lineup.update();
-  }
+  setTimeout(() => {
+    if (shared.lineup) {
+      shared.lineup.update();
+    }
+  }, 100);
+}, {
+  passive: false
 });
 
 initExport();
