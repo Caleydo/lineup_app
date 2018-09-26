@@ -1,23 +1,36 @@
-import { IDataset } from '../IDataset';
-import { parse, ParseResult } from 'papaparse';
-import { builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn } from 'lineupjs';
-import '!file-loader?name=preview.png!../soccer/soccer.png';
-import { splitMatrix, MatrixColumn, IStratification } from '../../model';
+import {IDataset} from '../IDataset';
+import {parse, ParseResult} from 'papaparse';
+import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn} from 'lineupjs';
+import '!file-loader?name=preview.png!./aids.png';
+import {splitMatrix, MatrixColumn, IStratification} from '../../model';
 
+
+const countriesTable = import('raw-loader!./AIDS_Countries.csv');
+// based on AIDS_Countries.csv
+const countryMatrixTables = [
+  {column: 'living_hiv', import: import('raw-loader!./AIDS_living_HIV.csv')},
+  {column: 'living_hiv_normalized', import: import('raw-loader!./AIDS_living_HIV_normalized.csv')},
+  {column: 'new_hiv_infections', import: import('raw-loader!./AIDS_new_HIV_infections.csv')},
+  {column: 'new_hiv_infections_normalized', import: import('raw-loader!./AIDS_new_HIV_infections_normalized.csv')},
+  {column: 'orphans', import: import('raw-loader!./AIDS_orphans.csv')},
+  {column: 'orphans_normalized', import: import('raw-loader!./AIDS_orphans_normalized.csv')},
+  {column: 'related_deaths', import: import('raw-loader!./AIDS_related_deaths.csv')},
+  {column: 'related_deaths_normalized', import: import('raw-loader!./AIDS_related_deaths_normalized.csv')},
+];
+
+// const yearsTable = import('raw-loader!./AIDS_Years.csv');
+// based on AIDS_Years.csv
+// const yearMatrixTables = [
+//   { column: 'on_art', import: import('raw-loader!./AIDS_on_ART.csv') },
+//   { column: 'on_art_normalized', import: import('raw-loader!./AIDS_on_ART_normalized.csv') },
+// ];
 
 function stratifications(): IStratification[] {
   const descs = [
     {
-      name: 'season',
+      name: 'decades',
       value: {
-        categories: [
-          '12/13',
-          '13/14',
-          '14/15',
-          '15/16',
-          '16/17',
-          '17/18',
-        ]
+        categories: ['1990s', '2000s', '2010s']
       }
     }
   ];
@@ -32,150 +45,162 @@ function stratifications(): IStratification[] {
 }
 
 export const data: IDataset = {
-  id: 'soccer',
-  title: 'Soccer Stats',
+  id: 'aids',
+  title: 'AIDS',
   image: './preview.png',
-  link: 'https://www.kaggle.com/gimunu/football-striker-performance',
-  description: `<p>
-  The aim of this dataset is to offer in a relatively small number of columns (~30) data to compare the performance of some football players, or to compare the efficiency of strikers in-between different European leagues.
-</p>`,
+  link: '',
+  description: `<p></p>`,
   rawData: '',
   buildScript(rawVariable: string, domVariable: string) {
     return `
+  // NOTE: This code will only build LineUp with the base table and exclude the matrix columns
+
   const parsed = Papa.parse(${rawVariable}, {
     dynamicTyping: true,
     header: true,
     skipEmptyLines: true
   });
 
-  parsed.data.forEach((row) => {
-    const suffix = [12, 13, 14, 15, 16, 17];
-    const cols = ['games', 'goals', 'minutes', 'assists'];
-    cols.forEach((col) => {
-      row[col] = suffix.map((d) => !row[col + d] && row[col + d] !== 0 ? null : row[col + d]);
-    });
-  });
-
   const lineup = LineUpJS.builder(parsed.data)
-    .column(buildStringColumn('player').width(150))
-    .column(buildNumberColumn('age', [0, NaN]))
-    .column(buildStringColumn('current_club').width(150).label('Current Club'))
-    .column(buildCategoricalColumn('current_league').label('Current League'))
-    .column(buildCategoricalColumn('foot'))
-    .column(buildNumberColumn('height', [0, NaN]))
-    .column(buildStringColumn('nationality'))
-    .column(buildCategoricalColumn('position'))
-    .column(buildNumberColumn('games', [0, NaN]).asArray(6).width(300))
-    .column(buildNumberColumn('goals', [0, NaN]).asArray(6).width(300))
-    .column(buildNumberColumn('minutes', [0, NaN]).asArray(6).width(300)))
-    .column(buildNumberColumn('assists', [0, NaN]).asArray(6).width(300))
+    .column(buildStringColumn('country').label('Country'))
+    .column(buildNumberColumn('sex_before_15').label('Sex before 15 (15-24, %, 2015)'))
+    .column(buildNumberColumn('condom_use').label('Condom use at last sex (%, 2015)'))
+    .column(buildNumberColumn('ppl_art_absolute').label('# ppl. on ART (2015)'))
+    .column(buildNumberColumn('ppl_art_relative').label('% ppl. on ART ( 2015)'))
+    .column(buildNumberColumn('knowing_have_hiv').label('Ppl knowing they have HIV (%, 2015)'))
+    .column(buildNumberColumn('hiv_prevention_knowledge').label('HIV prevention knowledge (age 15-24, %, 2015)'))
+    .column(buildNumberColumn('discriminatory_attitute_perc').label('Discriminatory attitude (%)'))
+    .column(buildCategoricalColumn('discriminatory_attitute_scale').label('Discriminatory attitude scale'))
+    .column(buildCategoricalColumn('human_development_index').label('Human development index'))
+    .column(buildCategoricalColumn('continent').label('Continent'))
+    .column(buildCategoricalColumn('hiv_restrictions').label('HIV restrictions on entry, stay, or residence'))
+    .column(buildNumberColumn('population').label('Population (2017)'))
+    .column(buildNumberColumn('yearly_change').label('Yearly change (%)'))
+    .column(buildNumberColumn('net_change').label('Net change'))
+    .column(buildNumberColumn('density').label('Density (P/SqKm)'))
+    .column(buildNumberColumn('land_area').label('Land Area (SqKm)'))
+    .column(buildNumberColumn('migrants').label('Migrants (net)'))
+    .column(buildNumberColumn('fertility_rate').label('Fertility Rate'))
+    .column(buildNumberColumn('median_age').label('Median Age'))
+    .column(buildNumberColumn('urban_population').label('Urban Population (%)'))
+    .column(buildNumberColumn('world_share').label('World Share (%)'))
     .deriveColors()
     .ranking(buildRanking()
       .aggregate()
       .group()
       .rank()
       .selection()
-      .column('player')
-      .column('current_league')
-      .column('current_club')
-      .column('position')
-      .column('foot')
-      .column('age')
-      .column('height')
-      .column('goals')
-      .column('games')
+      .column('country')
+      .column('continent')
+      .column('knowing_have_hiv')
+      .column('discriminatory_attitute_scale')
+      .column('urban_population')
       //.allColumns()
     )
     .buildTaggle(${domVariable});
   `;
   },
   build(node: HTMLElement) {
-    return import('raw-loader!./AIDS_Countries.csv').then((content: any) => {
-      const csv: string = content.default ? content.default : content;
-      this.rawData = csv;
-      return parse(csv, {
-        dynamicTyping: true,
-        header: true,
-        skipEmptyLines: true
-      });
-    }).then((parsed: ParseResult) => {
-      /*parsed.data.forEach((row) => {
-        const suffix = [12, 13, 14, 15, 16, 17];
-        const cols = ['games', 'goals', 'minutes', 'assists'];
-        cols.forEach((col) => {
-          row[col] = suffix.map((d) => !row[`${col}${d}`] && row[`${col}${d}`] !== 0 ? null : row[`${col}${d}`]);
+    const files = [
+      countriesTable,
+      ...countryMatrixTables.map((d) => d.import)
+    ];
+    return Promise.all(files)
+      .then((data: any[]) => {
+        return data.map((content, index) => {
+          const csv: string = content.default ? content.default : content;
+          // TODO find a way how to store the matrix tables
+          if (index === 0) {
+            this.rawData = csv;
+          }
+          return parse(csv, {
+            dynamicTyping: true,
+            header: true,
+            skipEmptyLines: true
+          });
         });
+      })
+      .then((parsedData: ParseResult[]) => {
+
+        const mainTable: ParseResult = parsedData[0];
+        const matrixResults: ParseResult[] = parsedData.slice(1);
+
+        const matrixRows: any[] = [];
+        countryMatrixTables.map((d, colIndex) => {
+          const colName = d.column;
+          matrixResults[colIndex].data.forEach((row, rowIndex) => {
+            matrixRows[rowIndex] = {
+              ...matrixRows[rowIndex],
+              [colName]: Object.values(row).filter((d) => d !== row['Country x Year'])
+            };
+          });
+        });
+
+        const rows = mainTable.data.map((row, rowIndex) => {
+          return {
+            ...row,
+            ...matrixRows[rowIndex]
+          };
+        });
+
+        const strats = stratifications();
+
+        return builder(rows)
+          .registerColumnType('matrix', MatrixColumn)
+          .registerToolbarAction('splitMatrix', splitMatrix)
+          .column(buildStringColumn('country').label('Country'))
+          .column(buildNumberColumn('sex_before_15').label('Sex before 15 (15-24, %, 2015)'))
+          .column(buildNumberColumn('condom_use').label('Condom use at last sex (%, 2015)'))
+          .column(buildNumberColumn('ppl_art_absolute').label('# ppl. on ART (2015)'))
+          .column(buildNumberColumn('ppl_art_relative').label('% ppl. on ART ( 2015)'))
+          .column(buildNumberColumn('knowing_have_hiv').label('Ppl knowing they have HIV (%, 2015)'))
+          .column(buildNumberColumn('hiv_prevention_knowledge').label('HIV prevention knowledge (age 15-24, %, 2015)'))
+          .column(buildNumberColumn('discriminatory_attitute_perc').label('Discriminatory attitude (%)'))
+          .column(buildCategoricalColumn('discriminatory_attitute_scale').label('Discriminatory attitude scale'))
+          .column(buildCategoricalColumn('human_development_index').label('Human development index'))
+          .column(buildCategoricalColumn('continent').label('Continent'))
+          .column(buildCategoricalColumn('hiv_restrictions').label('HIV restrictions on entry, stay, or residence'))
+          .column(buildNumberColumn('population').label('Population (2017)'))
+          .column(buildNumberColumn('yearly_change').label('Yearly change (%)'))
+          .column(buildNumberColumn('net_change').label('Net change'))
+          .column(buildNumberColumn('density').label('Density (P/SqKm)'))
+          .column(buildNumberColumn('land_area').label('Land Area (SqKm)'))
+          .column(buildNumberColumn('migrants').label('Migrants (net)'))
+          .column(buildNumberColumn('fertility_rate').label('Fertility Rate'))
+          .column(buildNumberColumn('median_age').label('Median Age'))
+          .column(buildNumberColumn('urban_population').label('Urban Population (%)'))
+          .column(buildNumberColumn('world_share').label('World Share (%)'))
+
+          // matrix columns
+          .column(buildNumberColumn('living_hiv', [100.0, 7000000.0]).label('N. ppl. living with HIV').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+          .column(buildNumberColumn('living_hiv_normalized', [0.0, 166.6217293]).label('N. ppl. living with HIV per 1000 ppl').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+
+          .column(buildNumberColumn('new_hiv_infections', [100.0, 850000.0]).label('N. new HIV infections').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+          .column(buildNumberColumn('new_hiv_infections_normalized', [0.0, 15.33289704]).label('N. new HIV infections per 1000 ppl').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+
+          .column(buildNumberColumn('related_deaths', [100.0, 410000.0]).label('AIDS related deaths').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+          .column(buildNumberColumn('related_deaths_normalized', [0.0, 7.395867983]).label('AIDS related deaths per 1000 ppl').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+
+          .column(buildNumberColumn('orphans', [100.0, 2200000.0]).label('AIDS orphans').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+          .column(buildNumberColumn('orphans_normalized', [0.0, 47.13008393]).label('AIDS orphans per 1000 ppl').asArray(26).width(300).custom('type', 'matrix').custom('stratifications', strats))
+
+          .deriveColors()
+          .ranking(buildRanking()
+            .aggregate()
+            .group()
+            .rank()
+            .selection()
+            .column('country')
+            .column('continent')
+            .column('knowing_have_hiv')
+            .column('new_hiv_infections_normalized')
+            .column('related_deaths_normalized')
+            .column('discriminatory_attitute_scale')
+            .column('urban_population')
+            .sortBy('country', 'asc')
+          )
+          .buildTaggle(node);
       });
-
-      const strats = stratifications();
-
-      return builder(parsed.data)
-        .registerColumnType('matrix', MatrixColumn)
-        .registerToolbarAction('splitMatrix', splitMatrix)
-        .column(buildStringColumn('player').width(150))
-        .column(buildNumberColumn('age', [0, NaN]))
-        .column(buildStringColumn('current_club').width(150).label('Current Club'))
-        .column(buildCategoricalColumn('current_league').label('Current League'))
-        .column(buildCategoricalColumn('foot'))
-        .column(buildNumberColumn('height', [0, NaN]))
-        .column(buildStringColumn('nationality'))
-        .column(buildCategoricalColumn('position'))
-        .column(buildNumberColumn('games', [0, NaN]).asArray(6).width(300).custom('type', 'matrix').custom('stratifications', strats))
-        .column(buildNumberColumn('goals', [0, NaN]).asArray(6).width(300).custom('type', 'matrix').custom('stratifications', strats))
-        .column(buildNumberColumn('minutes', [0, NaN]).asArray(6).width(300).custom('type', 'matrix').custom('stratifications', strats))
-        .column(buildNumberColumn('assists', [0, NaN]).asArray(6).width(300).custom('type', 'matrix').custom('stratifications', strats))
-        .deriveColors()
-        .ranking(buildRanking()
-          .aggregate()
-          .group()
-          .rank()
-          .selection()
-          .column('player')
-          .column('current_league')
-          .column('current_club')
-          .column('position')
-          .column('foot')
-          .column('age')
-          .column('height')
-          .column('goals')
-          .column('games')
-          //.allColumns()
-        )
-        .buildTaggle(node);*/
-      return builder(parsed.data)
-        .column(buildStringColumn('AIDS_Countries'))
-        .column(buildNumberColumn('Sex before 15 (15-24, %, 2015)'))
-        .column(buildNumberColumn('Condom use at last sex (%, 2015)'))
-        .column(buildNumberColumn('N. ppl on ART (2015)'))
-        .column(buildNumberColumn('% ppl. on ART ( 2015)'))
-        .column(buildNumberColumn('Ppl knowing they have HIV (%, 2015)'))
-        .column(buildNumberColumn('HIV prevention knowledge (age 15-24, %, 2015)'))
-        .column(buildNumberColumn('Discriminatory attitude (%)'))
-        .column(buildCategoricalColumn('Discriminatory attitude scale'))
-        .column(buildCategoricalColumn('Human devel. index'))
-        .column(buildCategoricalColumn('Continent'))
-        .column(buildCategoricalColumn('HIV restrictions on entry, stay, or residence'))
-        .column(buildNumberColumn('Population (2017)'))
-        .column(buildNumberColumn('Yearly change (%)'))
-        .column(buildNumberColumn('Net change'))
-        .column(buildNumberColumn('Density (P/SqKm)'))
-        .column(buildNumberColumn('Migrants (net)'))
-        .column(buildNumberColumn('Fert. Rate'))
-        .column(buildNumberColumn('Med. Age'))
-        .column(buildNumberColumn('Urban Pop (%)'))
-        .column(buildNumberColumn('World Share (%)'))
-
-
-        .column(buildCategoricalColumn('Sector'))
-        .column(buildStringColumn('Industry'))
-        .deriveColors()
-        .ranking(buildRanking()
-          .supportTypes()
-          .allColumns()
-          .sortBy('Forbes Rank', 'asc')
-        )
-        .buildTaggle(node);
-    });
   }
 };
 
