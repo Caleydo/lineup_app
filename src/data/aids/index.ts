@@ -26,22 +26,13 @@ const countryMatrixTables = [
 // ];
 
 function stratifications(): IStratification[] {
-  const descs = [
+  return [
     {
       name: 'decades',
-      value: {
-        categories: ['1990s', '2000s', '2010s']
-      }
+      categories: ['1990s', '2000s', '2010s'],
+      colIndexRange: [[0, 10], [10, 20], [20, 26]]
     }
   ];
-
-  return descs.map((d) => {
-    return {
-      name: d.name,
-      categories: d.value.categories,
-      data: d.value.categories
-    };
-  });
 }
 
 export const data: IDataset = {
