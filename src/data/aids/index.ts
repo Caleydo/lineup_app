@@ -4,27 +4,6 @@ import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildN
 import '!file-loader?name=preview.png!./aids.png';
 import {splitMatrix, MatrixColumn, IStratification} from '../../model';
 
-
-const countriesTable = import('raw-loader!./AIDS_Countries.csv');
-// based on AIDS_Countries.csv
-const countryMatrixTables = [
-  {column: 'living_hiv', import: import('raw-loader!./AIDS_living_HIV.csv')},
-  {column: 'living_hiv_normalized', import: import('raw-loader!./AIDS_living_HIV_normalized.csv')},
-  {column: 'new_hiv_infections', import: import('raw-loader!./AIDS_new_HIV_infections.csv')},
-  {column: 'new_hiv_infections_normalized', import: import('raw-loader!./AIDS_new_HIV_infections_normalized.csv')},
-  {column: 'orphans', import: import('raw-loader!./AIDS_orphans.csv')},
-  {column: 'orphans_normalized', import: import('raw-loader!./AIDS_orphans_normalized.csv')},
-  {column: 'related_deaths', import: import('raw-loader!./AIDS_related_deaths.csv')},
-  {column: 'related_deaths_normalized', import: import('raw-loader!./AIDS_related_deaths_normalized.csv')},
-];
-
-// const yearsTable = import('raw-loader!./AIDS_Years.csv');
-// based on AIDS_Years.csv
-// const yearMatrixTables = [
-//   { column: 'on_art', import: import('raw-loader!./AIDS_on_ART.csv') },
-//   { column: 'on_art_normalized', import: import('raw-loader!./AIDS_on_ART_normalized.csv') },
-// ];
-
 function stratifications(): IStratification[] {
   return [
     {
@@ -92,10 +71,31 @@ export const data: IDataset = {
   `;
   },
   build(node: HTMLElement) {
+    const countriesTable = import('raw-loader!./AIDS_Countries.csv');
+    // based on AIDS_Countries.csv
+    const countryMatrixTables = [
+      {column: 'living_hiv', import: import('raw-loader!./AIDS_living_HIV.csv')},
+      {column: 'living_hiv_normalized', import: import('raw-loader!./AIDS_living_HIV_normalized.csv')},
+      {column: 'new_hiv_infections', import: import('raw-loader!./AIDS_new_HIV_infections.csv')},
+      {column: 'new_hiv_infections_normalized', import: import('raw-loader!./AIDS_new_HIV_infections_normalized.csv')},
+      {column: 'orphans', import: import('raw-loader!./AIDS_orphans.csv')},
+      {column: 'orphans_normalized', import: import('raw-loader!./AIDS_orphans_normalized.csv')},
+      {column: 'related_deaths', import: import('raw-loader!./AIDS_related_deaths.csv')},
+      {column: 'related_deaths_normalized', import: import('raw-loader!./AIDS_related_deaths_normalized.csv')},
+    ];
+
+    // const yearsTable = import('raw-loader!./AIDS_Years.csv');
+    // based on AIDS_Years.csv
+    // const yearMatrixTables = [
+    //   { column: 'on_art', import: import('raw-loader!./AIDS_on_ART.csv') },
+    //   { column: 'on_art_normalized', import: import('raw-loader!./AIDS_on_ART_normalized.csv') },
+    // ];
+
     const files = [
       countriesTable,
       ...countryMatrixTables.map((d) => d.import)
     ];
+
     return Promise.all(files)
       .then((data: any[]) => {
         return data.map((content, index) => {
