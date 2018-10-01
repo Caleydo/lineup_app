@@ -1,7 +1,7 @@
 import {IDataset} from '../IDataset';
 import {parse, ParseResult} from 'papaparse';
 import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn} from 'lineupjs';
-import '!file-loader?name=preview.png!./aids.png';
+import image from './aids.png';
 import {splitMatrix, MatrixColumn, IStratification} from '../../model';
 
 function stratifications(): IStratification[] {
@@ -17,7 +17,7 @@ function stratifications(): IStratification[] {
 export const data: IDataset = {
   id: 'aids',
   title: 'AIDS',
-  image: './preview.png',
+  image,
   link: '',
   description: `<p></p>`,
   rawData: '',
