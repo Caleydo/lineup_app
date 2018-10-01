@@ -57,8 +57,7 @@ module.exports = (env, options) => {
         __BUILD_ID__: JSON.stringify(buildId)
       }),
       new MiniCssExtractPlugin({
-        filename: dev ? '[name].css' : '[name].[hash].css',
-        chunkFilename: dev ? '[id].css' : '[id].[hash].css',
+        filename: `[name].css`
       }),
       new ForkTsCheckerWebpackPlugin({
         checkSyntacticErrors: true
