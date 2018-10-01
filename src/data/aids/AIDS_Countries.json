@@ -1,0 +1,254 @@
+{
+  "columns": [{
+      "column": "country",
+      "type": "string",
+      "frozen": true
+    },
+    {
+      "column": "sex_before_15",
+      "domain": [
+        0.5,
+        29.3
+      ],
+      "type": "number"
+    },
+    {
+      "column": "condom_use",
+      "domain": [
+        0,
+        72.3
+      ],
+      "type": "number"
+    },
+    {
+      "column": "ppl_art_absolute",
+      "domain": [
+        9,
+        3384160
+      ],
+      "type": "number"
+    },
+    {
+      "column": "ppl_art_relative",
+      "domain": [
+        3.0,
+        90.0
+      ],
+      "type": "number"
+    },
+    {
+      "column": "knowing_have_hiv",
+      "domain": [
+        4.0,
+        95.0
+      ],
+      "type": "number"
+    },
+    {
+      "column": "hiv_prevention_knowledge",
+      "domain": [
+        4.3,
+        76.4
+      ],
+      "type": "number"
+    },
+    {
+      "column": "discriminatory_attitute_perc",
+      "domain": [
+        11.9,
+        80.1
+      ],
+      "type": "number"
+    },
+    {
+      "column": "discriminatory_attitute_scale",
+      "categories": [{
+          "color": "#7a0177",
+          "name": "High"
+        },
+        {
+          "color": "#feebe2",
+          "name": "Low"
+        },
+        {
+          "color": "#f768a1",
+          "name": "Medium"
+        },
+        {
+          "color": "#c51b8a",
+          "name": "Predominant"
+        },
+        {
+          "color": "#fbb4b9",
+          "name": "Slight"
+        },
+        {
+          "color": "#bdc9e1",
+          "name": "Unknown"
+        }
+      ],
+      "type": "categorical"
+    },
+    {
+      "column": "human_development_index",
+      "categories": [{
+          "color": "#ca0020",
+          "name": "1 Low human development"
+        },
+        {
+          "color": "#f4a582",
+          "name": "2 Medium human development"
+        },
+        {
+          "color": "#92c5de",
+          "name": "3 High human development"
+        },
+        {
+          "color": "#0571b0",
+          "name": "4 Very high human development"
+        }
+      ],
+      "type": "categorical"
+    },
+    {
+      "column": "continent",
+      "categories": [{
+          "color": "#b2df8a",
+          "name": "Africa"
+        },
+        {
+          "color": "#a6cee3",
+          "name": "Asia"
+        },
+        {
+          "color": "#1f78b4",
+          "name": "Europe"
+        },
+        {
+          "color": "#e31a1c",
+          "name": "North America"
+        },
+        {
+          "color": "#fb9a99",
+          "name": "Oceania"
+        },
+        {
+          "color": "#33a02c",
+          "name": "South America"
+        }
+      ],
+      "type": "categorical"
+    },
+    {
+      "column": "hiv_restrictions",
+      "categories": [{
+          "color": "#f1a340",
+          "name": "Complete bar"
+        },
+        {
+          "color": "#b35806",
+          "name": "Deportation"
+        },
+        {
+          "color": "#d8daeb",
+          "name": "No information provided"
+        },
+        {
+          "color": "#542788",
+          "name": "No restriction"
+        },
+        {
+          "color": "#fee0b6",
+          "name": "Require proof"
+        },
+        {
+          "color": "#998ec3",
+          "name": "Some restriction"
+        }
+      ],
+      "type": "categorical"
+    },
+    {
+      "column": "population",
+      "domain": [
+        285744,
+        1388232693
+      ],
+      "type": "number"
+    },
+    {
+      "column": "yearly_change",
+      "domain": [
+        -0.74,
+        4.1
+      ],
+      "type": "number"
+    },
+    {
+      "column": "net_change",
+      "domain": [
+        -278504,
+        115711130
+      ],
+      "type": "number"
+    },
+    {
+      "column": "density",
+      "domain": [
+        2,
+        8264
+      ],
+      "type": "number"
+    },
+    {
+      "column": "land_area",
+      "domain": [
+        300,
+        16292614
+      ],
+      "type": "number"
+    },
+    {
+      "column": "migrants",
+      "domain": [
+        -519644,
+        1001577
+      ],
+      "type": "number"
+    },
+    {
+      "column": "fertility_rate",
+      "domain": [
+        1.23,
+        7.63
+      ],
+      "type": "number"
+    },
+    {
+      "column": "median_age",
+      "domain": [
+        15,
+        47
+      ],
+      "type": "number"
+    },
+    {
+      "column": "urban_population",
+      "domain": [
+        8.2,
+        98.2
+      ],
+      "type": "number"
+    },
+    {
+      "column": "world_share",
+      "domain": [
+        0,
+        18.5
+      ],
+      "type": "number"
+    }
+  ],
+  "quotechar": "\"",
+  "separator": ","
+}

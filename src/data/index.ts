@@ -1,11 +1,12 @@
-import {IDataset} from './IDataset';
-import {wur, shanghai} from './wur';
+import { IDataset } from './IDataset';
+import { wur, shanghai } from './wur';
 import forbes from './forbes-top-2000-companies';
 import happiness from './world-happiness-report';
 import soccer from './soccer';
-import {ieeeheat, ieeebars} from './ieee-programming';
-export {IDataset} from './IDataset';
-export {default as fromFile} from './fromFile';
+import aids from './aids/index';
+import { ieeeheat, ieeebars } from './ieee-programming';
+export { IDataset } from './IDataset';
+export { default as fromFile } from './fromFile';
 
 export const data: IDataset[] = [
   wur,
@@ -14,6 +15,7 @@ export const data: IDataset[] = [
   happiness,
   ieeebars,
   ieeeheat,
+  aids,
   soccer
 ];
 

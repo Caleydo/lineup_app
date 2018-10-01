@@ -6,29 +6,13 @@ import {splitMatrix, MatrixColumn, IStratification} from '../../model';
 
 
 function stratifications(): IStratification[] {
-  const descs = [
+  return [
     {
       name: 'season',
-      value: {
-        categories: [
-          '12/13',
-          '13/14',
-          '14/15',
-          '15/16',
-          '16/17',
-          '17/18',
-        ]
-      }
+      categories: ['12/13', '13/14', '14/15', '15/16', '16/17', '17/18'],
+      colIndexRange: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7]]
     }
   ];
-
-  return descs.map((d) => {
-    return {
-      name: d.name,
-      categories: d.value.categories,
-      data: d.value.categories
-    };
-  });
 }
 
 export const data: IDataset = {
