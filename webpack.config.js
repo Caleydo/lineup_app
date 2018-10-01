@@ -1,7 +1,7 @@
 const resolve = require('path').resolve;
 const pkg = require('./package.json');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
@@ -56,8 +56,9 @@ module.exports = (env, options) => {
         __LICENSE__: JSON.stringify(pkg.license),
         __BUILD_ID__: JSON.stringify(buildId)
       }),
-      new ExtractTextPlugin({
-        filename: `[name].css`
+      new MiniCssExtractPlugin({
+        filename: dev ? '[name].css' : '[name].[hash].css',
+        chunkFilename: dev ? '[id].css' : '[id].[hash].css',
       }),
       new ForkTsCheckerWebpackPlugin({
         checkSyntacticErrors: true
@@ -80,12 +81,14 @@ module.exports = (env, options) => {
     ]),
     externals: {},
     module: {
-      rules: [{
-          test: /\.s?css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: ['css-loader', 'sass-loader']
-          })
+      rules: [
+        {
+          test: /\.(sa|sc|c)ss$/,
+          use: [
+            dev ? 'style-loader' : MiniCssExtractPlugin.loader,
+            'css-loader',
+            'sass-loader',
+          ],
         },
         {
           test: /\.tsx?$/,
