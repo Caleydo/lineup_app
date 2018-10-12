@@ -92,19 +92,19 @@
     {
       "column": "human_development_index",
       "categories": [{
-          "color": "#ca0020",
+          "color": "#ffffcc",
           "name": "1 Low human development"
         },
         {
-          "color": "#f4a582",
+          "color": "#a1dab4",
           "name": "2 Medium human development"
         },
         {
-          "color": "#92c5de",
+          "color": "#41b6c4",
           "name": "3 High human development"
         },
         {
-          "color": "#0571b0",
+          "color": "#225ea8",
           "name": "4 Very high human development"
         }
       ],
