@@ -113,27 +113,27 @@
     {
       "column": "continent",
       "categories": [{
-          "color": "#b2df8a",
+          "color": "#66c2a5",
           "name": "Africa"
         },
         {
-          "color": "#a6cee3",
+          "color": "#ffd92f",
           "name": "Asia"
         },
         {
-          "color": "#1f78b4",
+          "color": "#a6d854",
           "name": "Europe"
         },
         {
-          "color": "#e31a1c",
+          "color": "#e78ac3",
           "name": "North America"
         },
         {
-          "color": "#fb9a99",
+          "color": "#8da0cb",
           "name": "Oceania"
         },
         {
-          "color": "#33a02c",
+          "color": "#fc8d62",
           "name": "South America"
         }
       ],
