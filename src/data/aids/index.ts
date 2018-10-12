@@ -1,8 +1,13 @@
 import {IDataset} from '../IDataset';
 import {parse, ParseResult} from 'papaparse';
-import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn} from 'lineupjs';
+import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn, ICategory} from 'lineupjs';
 import image from './aids.png';
 import {splitMatrix, MatrixColumn, IStratification} from '../../model';
+import {columns as rawColumns} from './AIDS_Countries.json';
+
+function getCategories(column: string): ICategory[] {
+  return rawColumns.filter((d: any) => d.column === column)[0].categories;
+}
 
 function stratifications(): IStratification[] {
   return [
@@ -147,10 +152,10 @@ export const data: IDataset = {
           .column(buildNumberColumn('knowing_have_hiv').label('Ppl knowing they have HIV (%, 2015)'))
           .column(buildNumberColumn('hiv_prevention_knowledge').label('HIV prevention knowledge (age 15-24, %, 2015)'))
           .column(buildNumberColumn('discriminatory_attitute_perc').label('Discriminatory attitude (%)'))
-          .column(buildCategoricalColumn('discriminatory_attitute_scale').label('Discriminatory attitude scale'))
-          .column(buildCategoricalColumn('human_development_index').label('Human development index'))
-          .column(buildCategoricalColumn('continent').label('Continent'))
-          .column(buildCategoricalColumn('hiv_restrictions').label('HIV restrictions on entry, stay, or residence'))
+          .column(buildCategoricalColumn('discriminatory_attitute_scale').label('Discriminatory attitude scale').categories(getCategories('discriminatory_attitute_scale')))
+          .column(buildCategoricalColumn('human_development_index').label('Human development index').categories(getCategories('human_development_index')))
+          .column(buildCategoricalColumn('continent').label('Continent').categories(getCategories('continent')))
+          .column(buildCategoricalColumn('hiv_restrictions').label('HIV restrictions on entry, stay, or residence').categories(getCategories('hiv_restrictions')))
           .column(buildNumberColumn('population').label('Population (2017)'))
           .column(buildNumberColumn('yearly_change').label('Yearly change (%)'))
           .column(buildNumberColumn('net_change').label('Net change'))
