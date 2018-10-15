@@ -1,6 +1,6 @@
 import {IDataset} from '../IDataset';
 import {parse, ParseResult} from 'papaparse';
-import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn, ICategory} from 'lineupjs';
+import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn, ICategory, CategoricalColumn, ICellRendererFactory, ERenderMode, Column, NumberColumn, StringColumn} from 'lineupjs';
 import image from './aids.png';
 import {splitMatrix, MatrixColumn, IStratification} from '../../model';
 import {columns as rawColumns} from './AIDS_Countries.json';
@@ -17,6 +17,61 @@ function stratifications(): IStratification[] {
       colIndexRange: [[0, 10], [10, 20], [20, 26]]
     }
   ];
+}
+
+/**
+ * Check which renderer should be available and which one should be disabled.
+ * The function is implemented as black list. Add renderer that should be hidden for certain columns and renderer.
+ */
+function canRender(renderer: ICellRendererFactory, col: Column, mode: ERenderMode): boolean {
+  // Note: for some renderer the properties `groupTitle` or `summaryTitle` does not exist, in these cases the fallback property `title` is used.
+  if(col instanceof CategoricalColumn) {
+    switch(mode) {
+      case ERenderMode.CELL:
+        return !(renderer.title === 'Table' || renderer.title === 'Heatmap');
+
+      case ERenderMode.GROUP:
+        return !(renderer.title === 'Table' || renderer.title === 'Heatmap' || renderer.groupTitle === 'None');
+
+      case ERenderMode.SUMMARY:
+        return !(renderer.title === 'Table');
+    }
+
+  } else if(col instanceof NumberColumn) {
+    switch(mode) {
+      case ERenderMode.GROUP:
+        return !(renderer.groupTitle === 'None');
+
+      case ERenderMode.SUMMARY:
+        return !(renderer.summaryTitle === 'None');
+    }
+
+  } else if(col instanceof StringColumn) {
+    switch(mode) {
+      case ERenderMode.CELL:
+        return !(renderer.title === 'Default' || renderer.title === 'Image' || renderer.title === 'Link');
+
+      case ERenderMode.GROUP:
+        return !(renderer.groupTitle === 'None' || renderer.groupTitle === 'Link');
+
+      case ERenderMode.SUMMARY:
+        return !(renderer.summaryTitle === 'Default');
+    }
+
+  } else if(col instanceof MatrixColumn) {
+    switch(mode) {
+      case ERenderMode.CELL:
+        return !(renderer.title === 'Bar Table' || renderer.title === 'Bar Chart' || renderer.title === 'Histogram' || renderer.title === 'Table');
+
+      case ERenderMode.GROUP:
+        return !(renderer.groupTitle === 'None' || renderer.title === 'Table');
+
+      case ERenderMode.SUMMARY:
+        return !(renderer.title === 'Bar Table' || renderer.title === 'Heatmap' || renderer.title === 'Table');
+    }
+  }
+
+  return true;
 }
 
 export const data: IDataset = {
@@ -142,6 +197,7 @@ export const data: IDataset = {
         const strats = stratifications();
 
         return builder(rows)
+          .canRender(canRender)
           .registerColumnType('matrix', MatrixColumn)
           .registerToolbarAction('splitMatrix', splitMatrix)
           .column(buildStringColumn('country').label('Country'))
