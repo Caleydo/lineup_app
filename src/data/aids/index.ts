@@ -22,6 +22,10 @@ function stratifications(): IStratification[] {
 /**
  * Check which renderer should be available and which one should be disabled.
  * The function is implemented as black list. Add the renderer type that should be hidden for certain columns.
+ * @param type renderer type (see `renderers` in `lineupjs/src/renderer/index.ts`)
+ * @param _renderer the renderer class itself
+ * @param col the column
+ * @param mode the renderer mode
  */
 function canRender(type: string, _renderer: ICellRendererFactory, col: Column, mode: ERenderMode): boolean {
   if(col instanceof CategoricalColumn) {
