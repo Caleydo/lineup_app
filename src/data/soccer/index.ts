@@ -3,6 +3,7 @@ import {parse, ParseResult} from 'papaparse';
 import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn} from 'lineupjs';
 import '!file-loader?name=preview.png!./soccer.png';
 import {splitMatrix, MatrixColumn, IStratification} from '../../model';
+import {canRender} from '../utils';
 
 
 function stratifications(): IStratification[] {
@@ -95,6 +96,7 @@ export const data: IDataset = {
       const strats = stratifications();
 
       return builder(parsed.data)
+        .canRender(canRender)
         .registerColumnType('matrix', MatrixColumn)
         .registerToolbarAction('splitMatrix', splitMatrix)
         .column(buildStringColumn('player').width(150))

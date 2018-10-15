@@ -4,6 +4,7 @@ import {builder, buildRanking, buildStringColumn, buildNumberColumn} from 'lineu
 
 import image from './wur.png';
 import imageShanghai from './shanghai.png';
+import {canRender} from '../utils';
 
 export const wur: IDataset = {
   id: 'wur',
@@ -73,6 +74,7 @@ and for undermining non-English-instructing institutions.
       // per year:
       const perYear = `score,national_rank,quality_of_education,alumni_employment,quality_of_faculty,publications,influence,citations,broad_impact,patents`.split(',');
       const b = builder(rows)
+        .canRender(canRender)
         .column(buildStringColumn('institution'))
         .column(buildStringColumn('country'));
 
@@ -165,6 +167,7 @@ and for undermining humanities and quality of instruction.
       // per year:
       const perYear = `total_score,alumni,award,hici,ns,pub,pcp`.split(',');
       const b = builder(rows)
+        .canRender(canRender)
         .column(buildStringColumn('university_name'));
 
       yearArray.slice(0, 2).forEach((year) => {

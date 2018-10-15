@@ -4,6 +4,7 @@ import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildN
 
 import imageBars from './ieee_bars.png';
 import imageHeat from './ieee_heat.png';
+import {canRender} from '../utils';
 
 export const ieeebars: IDataset = {
   id: 'ieee_bars',
@@ -97,6 +98,7 @@ export const ieeebars: IDataset = {
 
       // basic data
       let dataBuilder = builder(parsed.data)
+        .canRender(canRender)
         .column(buildStringColumn('name'))
         .column(buildCategoricalColumn('web'))
         .column(buildCategoricalColumn('mobile'))
@@ -239,6 +241,7 @@ export const ieeeheat: IDataset = {
 
       // basic data
       let dataBuilder = builder(parsed.data)
+        .canRender(canRender)
         .column(buildStringColumn('name'))
         .column(buildCategoricalColumn('web'))
         .column(buildCategoricalColumn('mobile'))

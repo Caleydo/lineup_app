@@ -2,6 +2,7 @@
 import {parse, ParseResult} from 'papaparse';
 import {IDataset} from './IDataset';
 import {builder} from 'lineupjs';
+import {canRender} from './utils';
 
 export default function fromFile(file: File): Promise<IDataset> {
   return new Promise<{raw: string, parsed: ParseResult}>((resolve) => {
@@ -36,6 +37,7 @@ export default function fromFile(file: File): Promise<IDataset> {
       },
       build: (node: HTMLElement) => {
         return builder(parsed.data)
+          .canRender(canRender)
           .deriveColumns(...parsed.meta.fields)
           .deriveColors()
           .defaultRanking()

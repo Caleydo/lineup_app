@@ -2,6 +2,7 @@ import {IDataset} from '../IDataset';
 import {parse, ParseResult} from 'papaparse';
 import {builder, buildRanking, buildStringColumn, buildNumberColumn} from 'lineupjs';
 import image from './happiness.png';
+import {canRender} from '../utils';
 
 export const data: IDataset = {
   id: 'happiness',
@@ -52,6 +53,7 @@ export const data: IDataset = {
     }).then((parsed: ParseResult) => {
       // "Country","Happiness.Rank","Happiness.Score","Whisker.high","Whisker.low","Economy..GDP.per.Capita.","Family","Health..Life.Expectancy.","Freedom","Generosity","Trust..Government.Corruption.","Dystopia.Residual"
       return builder(parsed.data)
+        .canRender(canRender)
         .column(buildStringColumn('Country'))
         .column(buildNumberColumn('Happiness.Score', [0, 10]))
         .column(buildNumberColumn('Economy..GDP.per.Capita.', [0, 10]))

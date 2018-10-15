@@ -2,6 +2,7 @@ import {IDataset} from '../IDataset';
 import {parse, ParseResult} from 'papaparse';
 import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn} from 'lineupjs';
 import image from './forbes.png';
+import {canRender} from '../utils';
 
 export const data: IDataset = {
   id: 'forbes',
@@ -51,6 +52,7 @@ export const data: IDataset = {
       });
     }).then((parsed: ParseResult) => {
       return builder(parsed.data)
+        .canRender(canRender)
         .column(buildStringColumn('Company'))
         .column(buildStringColumn('Country'))
         .column(buildNumberColumn('Rank').label('Forbes Rank'))
