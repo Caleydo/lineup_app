@@ -21,53 +21,52 @@ function stratifications(): IStratification[] {
 
 /**
  * Check which renderer should be available and which one should be disabled.
- * The function is implemented as black list. Add renderer that should be hidden for certain columns and renderer.
+ * The function is implemented as black list. Add the renderer type that should be hidden for certain columns.
  */
-function canRender(renderer: ICellRendererFactory, col: Column, mode: ERenderMode): boolean {
-  // Note: for some renderer the properties `groupTitle` or `summaryTitle` does not exist, in these cases the fallback property `title` is used.
+function canRender(type: string, _renderer: ICellRendererFactory, col: Column, mode: ERenderMode): boolean {
   if(col instanceof CategoricalColumn) {
     switch(mode) {
       case ERenderMode.CELL:
-        return !(renderer.title === 'Table' || renderer.title === 'Heatmap');
+        return !(type === 'table' || type === 'catheatmap');
 
       case ERenderMode.GROUP:
-        return !(renderer.title === 'Table' || renderer.title === 'Heatmap' || renderer.groupTitle === 'None');
+        return !(type === 'table' || type === 'catheatmap' || type === 'default');
 
       case ERenderMode.SUMMARY:
-        return !(renderer.title === 'Table');
+        return !(type === 'table');
     }
 
   } else if(col instanceof NumberColumn) {
     switch(mode) {
       case ERenderMode.GROUP:
-        return !(renderer.groupTitle === 'None');
+        return !(type === 'default');
 
       case ERenderMode.SUMMARY:
-        return !(renderer.summaryTitle === 'None');
+        return !(type === 'default');
     }
 
   } else if(col instanceof StringColumn) {
     switch(mode) {
       case ERenderMode.CELL:
-        return !(renderer.title === 'Default' || renderer.title === 'Image' || renderer.title === 'Link');
+        return !(type === 'default' || type === 'image' || type === 'link');
 
       case ERenderMode.GROUP:
-        return !(renderer.groupTitle === 'None' || renderer.groupTitle === 'Link');
+        return !(type === 'default' || type === 'link');
 
       case ERenderMode.SUMMARY:
-        return !(renderer.summaryTitle === 'Default');
+        return !(type === 'default');
     }
 
   } else if(col instanceof MatrixColumn) {
     switch(mode) {
       case ERenderMode.CELL:
-        return !(renderer.title === 'Bar Table' || renderer.title === 'Bar Chart' || renderer.title === 'Histogram' || renderer.title === 'Table');
+        return !(type === 'mapbars' || type === 'verticalbar' || type === 'histogram' || type === 'table');
 
       case ERenderMode.GROUP:
-        return !(renderer.groupTitle === 'None' || renderer.title === 'Table');
+        return !(type === 'default' || type === 'table');
 
       case ERenderMode.SUMMARY:
-        return !(renderer.title === 'Bar Table' || renderer.title === 'Heatmap' || renderer.title === 'Table');
+        return !(type === 'mapbars' || type === 'heatmap' || type === 'table');
     }
   }
 
