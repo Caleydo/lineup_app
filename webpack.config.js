@@ -57,7 +57,10 @@ module.exports = (env, options) => {
         __BUILD_ID__: JSON.stringify(buildId)
       }),
       new MiniCssExtractPlugin({
-        filename: `[name].css`
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: '[name].css',
+        chunkFilename: '[id].css'
       }),
       new ForkTsCheckerWebpackPlugin({
         checkSyntacticErrors: true
@@ -80,14 +83,13 @@ module.exports = (env, options) => {
     ]),
     externals: {},
     module: {
-      rules: [
-        {
-          test: /\.(sa|sc|c)ss$/,
+      rules: [{
+          test: /\.s?css$/,
           use: [
-            dev ? 'style-loader' : MiniCssExtractPlugin.loader,
+            MiniCssExtractPlugin.loader,
             'css-loader',
-            'sass-loader',
-          ],
+            'sass-loader'
+          ]
         },
         {
           test: /\.tsx?$/,
