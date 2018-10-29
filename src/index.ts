@@ -1,10 +1,8 @@
-import 'materialize-css';
+import {Tooltip, Carousel, FloatingActionButton, toast} from 'materialize-css';
 import 'file-loader?name=index.html!extract-loader!html-loader?interpolate!./index.html';
 import './assets/favicon/favicon';
 import './style.scss';
-import 'font-awesome/css/font-awesome.css';
-import * as $ from 'jquery';
-import 'lineupjs/build/LineUpJS.css';
+import 'typeface-roboto/index.css';
 import initExport from './export';
 import shared from './shared';
 import data, {toCard, IDataset, fromFile} from './data';
@@ -16,13 +14,11 @@ function build(builder: Promise<IDataset>) {
   builder.then((d: IDataset) => {
     shared.dataset = d;
     return d.build(<HTMLElement>document.querySelector('div.lu-c'));
-  }
-  ).then((l) => {
+  }).then((l) => {
     shared.lineup = l;
     disableBubbling(<HTMLElement>document.querySelector('div.lu-c > main > main'), 'mousemove', 'mouseout', 'mouseover');
     return new Promise<any>((resolve) => setTimeout(resolve, 500));
-  }
-  ).then(() => {
+  }).then(() => {
     const next = `#${shared.dataset!.id}`;
     if (location.hash !== 'next') {
       location.assign(next);
@@ -47,8 +43,10 @@ function build(builder: Promise<IDataset>) {
     }
     );
     uploader.dataset.state = 'ready';
-  }
-  );
+  }).catch((error) => {
+    uploader.dataset.state = 'initial';
+    toast({html: `<pre>${error}</pre>`, displayLength: 5000});
+  });
 }
 
 function disableBubbling(node: HTMLElement, ...events: string[]) {
@@ -73,26 +71,33 @@ function reset() {
 
 function rebuildCarousel() {
   const base = <HTMLElement>document.querySelector('.carousel');
-  (<any>$)('.carousel').carousel('destroy');
+  const instance = Carousel.getInstance(base);
+  if (instance) {
+    instance.destroy();
+  }
   delete base.dataset.namespace;
   base.classList.remove('initialized');
   base.innerHTML = '';
   data.forEach((d) => base.insertAdjacentHTML('afterbegin', toCard(d))); // init carousel
-  (<any>$)('.carousel').carousel();
+  Carousel.init(base);
 }
 
 function showFile(file: File) {
-  build(fromFile(file).then((r) => {
+  const f = fromFile(file).then((r) => {
     data.unshift(r);
     return r;
-  }
-  ));
+  });
+  build(f);
 }
 
 window.addEventListener('resize', () => {
-  if (shared.lineup) {
-    shared.lineup.update();
-  }
+  setTimeout(() => {
+    if (shared.lineup) {
+      shared.lineup.update();
+    }
+  }, 100);
+}, {
+  passive: false
 });
 
 initExport();
@@ -115,16 +120,21 @@ initExport();
   }
   );
   uploader.addEventListener('drop', (evt) => {
-    if (evt.dataTransfer.files.length !== 1) {
+    if (evt.dataTransfer!.files.length !== 1) {
       return;
     }
-    showFile(evt.dataTransfer.files[0]);
+    showFile(evt.dataTransfer!.files[0]);
     evt.preventDefault();
   }
   );
 }
 
 rebuildCarousel();
+
+FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {
+  direction: 'left'
+});
+Tooltip.init(document.querySelectorAll('.tooltipped'));
 
 {
   const h = location.hash.slice(1);
