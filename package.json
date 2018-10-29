@@ -71,8 +71,8 @@
   "dependencies": {
     "@types/materialize-css": "^1.0.5",
     "@types/papaparse": "^4.5.4",
+    "lineupjs": "github:Caleydo/lineupjs#taggle-fusion-issue-3-4",
     "font-awesome": "^4.7.0",
-    "lineupjs": "^4.0.0-alpha.4",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^1.0.0",
     "papaparse": "^4.6.1",
