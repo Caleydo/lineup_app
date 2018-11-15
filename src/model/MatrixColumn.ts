@@ -1,4 +1,4 @@
-import {NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, Column, toolbar} from 'lineupjs';
+import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, Column, toolbar } from 'lineupjs';
 
 export interface IStratification {
   name: string;
@@ -12,7 +12,7 @@ export interface IMatrixColumnDesc extends INumbersColumnDesc {
 
 @toolbar('splitMatrix')
 export default class MatrixColumn extends NumbersColumn {
-  constructor(id: string, desc: Readonly<IMatrixColumnDesc>)  {
+  constructor(id: string, desc: Readonly<IMatrixColumnDesc>) {
     super(id, desc);
   }
 
@@ -24,10 +24,10 @@ export default class MatrixColumn extends NumbersColumn {
     const base = <NestedColumn>provider.create(createNestedDesc(`${this.label} by ${stratification.name}`));
     const w = this.getWidth();
     stratification.categories.forEach((group) => {
-      const g = typeof group === 'string' ? { name: group, label: group, color: undefined } : group;
+      const g = typeof group === 'string' ? { name: group, label: group } : group;
       const gcol = <MatrixColumn>provider.clone(this);
       // set group name
-      gcol.setMetaData({ label: g.label || g.name, color: g.color || Column.DEFAULT_COLOR, description: '' });
+      gcol.setMetaData({ label: g.label || g.name, description: '' });
 
       const length = stratification.data.reduce((a, s) => a + (s === g.name ? 1 : 0), 0);
       gcol.setSplicer({
