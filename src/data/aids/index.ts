@@ -1,3 +1,4 @@
+import { PRELOADED_TYPE } from './../IDataset';
 import {IDataset} from '../IDataset';
 import {parse, ParseResult} from 'papaparse';
 import {builder, buildRanking, buildStringColumn, buildCategoricalColumn, buildNumberColumn, ICategory} from 'lineupjs';
@@ -22,59 +23,64 @@ function stratifications(): IStratification[] {
 
 export const data: IDataset = {
   id: 'aids',
-  title: 'AIDS',
+  type: PRELOADED_TYPE,
+  creationDate: new Date(),
+  name: 'AIDS',
   image,
   link: '',
   description: `<p></p>`,
   rawData: '',
-  buildScript(rawVariable: string, domVariable: string) {
+  buildScript(rawVariable: string, domVariable: string, dumpVariable: string) {
     return `
-  // NOTE: This code will only build LineUp with the base table and exclude the matrix columns
+// NOTE: This code will only build LineUp with the base table and exclude the matrix columns
 
-  const parsed = Papa.parse(${rawVariable}, {
-    dynamicTyping: true,
-    header: true,
-    skipEmptyLines: true
-  });
+const parsed = Papa.parse(${rawVariable}, {
+  dynamicTyping: true,
+  header: true,
+  skipEmptyLines: true
+});
 
-  const lineup = LineUpJS.builder(parsed.data)
-    .column(buildStringColumn('country').label('Country'))
-    .column(buildNumberColumn('sex_before_15').label('Sex before 15 (15-24, %, 2015)'))
-    .column(buildNumberColumn('condom_use').label('Condom use at last sex (%, 2015)'))
-    .column(buildNumberColumn('ppl_art_absolute').label('# ppl. on ART (2015)'))
-    .column(buildNumberColumn('ppl_art_relative').label('% ppl. on ART ( 2015)'))
-    .column(buildNumberColumn('knowing_have_hiv').label('Ppl knowing they have HIV (%, 2015)'))
-    .column(buildNumberColumn('hiv_prevention_knowledge').label('HIV prevention knowledge (age 15-24, %, 2015)'))
-    .column(buildNumberColumn('discriminatory_attitute_perc').label('Discriminatory attitude (%)'))
-    .column(buildCategoricalColumn('discriminatory_attitute_scale').label('Discriminatory attitude scale'))
-    .column(buildCategoricalColumn('human_development_index').label('Human development index'))
-    .column(buildCategoricalColumn('continent').label('Continent'))
-    .column(buildCategoricalColumn('hiv_restrictions').label('HIV restrictions on entry, stay, or residence'))
-    .column(buildNumberColumn('population').label('Population (2017)'))
-    .column(buildNumberColumn('yearly_change').label('Yearly change (%)'))
-    .column(buildNumberColumn('net_change').label('Net change'))
-    .column(buildNumberColumn('density').label('Density (P/SqKm)'))
-    .column(buildNumberColumn('land_area').label('Land Area (SqKm)'))
-    .column(buildNumberColumn('migrants').label('Migrants (net)'))
-    .column(buildNumberColumn('fertility_rate').label('Fertility Rate'))
-    .column(buildNumberColumn('median_age').label('Median Age'))
-    .column(buildNumberColumn('urban_population').label('Urban Population (%)'))
-    .column(buildNumberColumn('world_share').label('World Share (%)'))
-    .deriveColors()
-    .ranking(buildRanking()
-      .aggregate()
-      .group()
-      .rank()
-      .selection()
-      .column('country')
-      .column('continent')
-      .column('knowing_have_hiv')
-      .column('discriminatory_attitute_scale')
-      .column('urban_population')
-      //.allColumns()
-    )
-    .buildTaggle(${domVariable});
-  `;
+const dump = ${dumpVariable};
+
+const lineup = LineUpJS.builder(parsed.data)
+  .column(LineUpJS.buildStringColumn('country').label('Country'))
+  .column(LineUpJS.buildNumberColumn('sex_before_15').label('Sex before 15 (15-24, %, 2015)'))
+  .column(LineUpJS.buildNumberColumn('condom_use').label('Condom use at last sex (%, 2015)'))
+  .column(LineUpJS.buildNumberColumn('ppl_art_absolute').label('# ppl. on ART (2015)'))
+  .column(LineUpJS.buildNumberColumn('ppl_art_relative').label('% ppl. on ART ( 2015)'))
+  .column(LineUpJS.buildNumberColumn('knowing_have_hiv').label('Ppl knowing they have HIV (%, 2015)'))
+  .column(LineUpJS.buildNumberColumn('hiv_prevention_knowledge').label('HIV prevention knowledge (age 15-24, %, 2015)'))
+  .column(LineUpJS.buildNumberColumn('discriminatory_attitute_perc').label('Discriminatory attitude (%)'))
+  .column(LineUpJS.buildCategoricalColumn('discriminatory_attitute_scale').label('Discriminatory attitude scale'))
+  .column(LineUpJS.buildCategoricalColumn('human_development_index').label('Human development index'))
+  .column(LineUpJS.buildCategoricalColumn('continent').label('Continent'))
+  .column(LineUpJS.buildCategoricalColumn('hiv_restrictions').label('HIV restrictions on entry, stay, or residence'))
+  .column(LineUpJS.buildNumberColumn('population').label('Population (2017)'))
+  .column(LineUpJS.buildNumberColumn('yearly_change').label('Yearly change (%)'))
+  .column(LineUpJS.buildNumberColumn('net_change').label('Net change'))
+  .column(LineUpJS.buildNumberColumn('density').label('Density (P/SqKm)'))
+  .column(LineUpJS.buildNumberColumn('land_area').label('Land Area (SqKm)'))
+  .column(LineUpJS.buildNumberColumn('migrants').label('Migrants (net)'))
+  .column(LineUpJS.buildNumberColumn('fertility_rate').label('Fertility Rate'))
+  .column(LineUpJS.buildNumberColumn('median_age').label('Median Age'))
+  .column(LineUpJS.buildNumberColumn('urban_population').label('Urban Population (%)'))
+  .column(LineUpJS.buildNumberColumn('world_share').label('World Share (%)'))
+  .deriveColors()
+  .ranking(LineUpJS.buildRanking()
+    .aggregate()
+    .group()
+    .rank()
+    .selection()
+    .column('country')
+    .column('continent')
+    .column('knowing_have_hiv')
+    .column('discriminatory_attitute_scale')
+    .column('urban_population')
+    //.allColumns()
+  )
+  .restore(dump)
+  .buildTaggle(${domVariable});
+`;
   },
   build(node: HTMLElement) {
     const countriesTable = import('raw-loader!./AIDS_Countries.csv');

@@ -1,4 +1,4 @@
-import { IDataset } from './IDataset';
+import {IDatasetMeta, PRELOADED_TYPE, IDataset} from './IDataset';
 import { wur, shanghai } from './wur';
 import forbes from './forbes-top-2000-companies';
 import happiness from './world-happiness-report';
@@ -8,7 +8,6 @@ import { ieeeheat, ieeebars } from './ieee-programming';
 import {listDatasets, listSessions} from './db';
 import JSON_LOADER from './loader_json';
 import CSV_LOADER from './loader_csv';
-import {IDatasetMeta, PRELOADED_TYPE} from './IDataset';
 
 export {IDataset} from './IDataset';
 export * from './ui';
@@ -20,7 +19,7 @@ const preloaded: IDataset[] = [
   forbes,
   happiness,
   ieeebars,
-  ieeeheat
+  ieeeheat,
   aids,
 ];
 
