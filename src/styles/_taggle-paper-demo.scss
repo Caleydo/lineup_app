@@ -1,0 +1,6 @@
+
+// Hide compress / expand toolbar action for composite columns (e.g., split matrix columns)
+i[title="Compress"],
+i[title="Expand"] {
+  display: none;
+}
