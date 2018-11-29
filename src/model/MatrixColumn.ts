@@ -21,7 +21,7 @@ export interface IMatrixColumnDesc extends INumbersColumnDesc {
 }
 
 @toolbar('splitMatrix')
-export default class MatrixColumn extends NumbersColumn {
+export class MatrixColumn extends NumbersColumn {
   constructor(id: string, desc: Readonly<IMatrixColumnDesc>) {
     super(id, desc);
   }

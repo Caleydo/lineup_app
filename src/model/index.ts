@@ -1,8 +1,8 @@
-import MatrixColumn from './MatrixColumn';
+import {MatrixColumn} from './MatrixColumn';
 import {IToolbarAction} from 'lineupjs';
 import SplitMatrixDialog from './SplitMatrixDialog';
 
-export {default as MatrixColumn, IStratification} from './MatrixColumn';
+export {MatrixColumn, IStratification} from './MatrixColumn';
 
 export const splitMatrix: IToolbarAction = {
   title: 'Split By &hellip;',
