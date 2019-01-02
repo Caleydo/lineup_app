@@ -50,7 +50,7 @@ yearArray.slice(2).forEach((year) => {
   b.column(LineUpJS.buildNumberColumn(year + '_score').label('score (' + year + ')'));
 });
 
-const lineup = b.deriveColors().restore(dump).buildTaggle(${domVariable});
+const lineup = b.deriveColors().aggregationStrategy('group+top+item').restore(dump).buildTaggle(${domVariable});
   `;
   },
   build(node: HTMLElement) {
@@ -93,7 +93,7 @@ const lineup = b.deriveColors().restore(dump).buildTaggle(${domVariable});
         b.column(buildNumberColumn(`${year}_score`).label(`score (${year})`));
       });
 
-      return b.deriveColors().buildTaggle(node);
+      return b.deriveColors().aggregationStrategy('group+top+item').buildTaggle(node);
     });
   }
 };
@@ -190,7 +190,7 @@ const lineup = b.deriveColors().restore(dump).buildTaggle(${domVariable});`;
         b.column(buildNumberColumn(`${year}_total_score`, [0, 100]).label(`total_score (${year})`));
       });
 
-      return b.deriveColors().buildTaggle(node);
+      return b.deriveColors().aggregationStrategy('group+top+item').buildTaggle(node);
     });
   }
 };

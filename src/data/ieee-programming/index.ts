@@ -68,7 +68,7 @@ export const ieeebars: IDataset = {
     });
   });
 
-  const lineup = dataBuilder.deriveColors().restore(dump).buildTaggle(${domVariable});
+  const lineup = dataBuilder.deriveColors().aggregationStrategy('group+top+item').restore(dump).buildTaggle(${domVariable});
   `;
   },
   build(node: HTMLElement) {
@@ -131,7 +131,7 @@ export const ieeebars: IDataset = {
         );
       });
 
-      return dataBuilder.deriveColors().buildTaggle(node);
+      return dataBuilder.deriveColors().aggregationStrategy('group+top+item').buildTaggle(node);
     });
   }
 };
@@ -192,7 +192,7 @@ export const ieeeheat: IDataset = {
     dataBuilder = dataBuilder.column(LineUpJS.buildNumberColumn(year.toString(), [0, NaN]).asArray(sources));
   });
 
-  const lineup = dataBuilder.deriveColors().restore(dump).buildTaggle(${domVariable});
+  const lineup = dataBuilder.deriveColors().aggregationStrategy('group+top+item').restore(dump).buildTaggle(${domVariable});
   `;
   },
   build(node: HTMLElement) {
@@ -257,7 +257,7 @@ export const ieeeheat: IDataset = {
             .sortBy('2017', 'desc')
           );
 
-      return dataBuilder.deriveColors().buildTaggle(node);
+      return dataBuilder.deriveColors().aggregationStrategy('group+top+item').buildTaggle(node);
     });
   }
 };

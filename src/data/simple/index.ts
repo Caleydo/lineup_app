@@ -28,6 +28,7 @@ for (let i = 0; i < 100; ++i) {
 const lineup = LineUpJS.builder(arr)
   .deriveColumns()
   .deriveColors()
+  .aggregationStrategy('group+top+item')
   .restore(${dumpVariable})
   .build(${domVariable});
   `;
@@ -48,6 +49,7 @@ const lineup = LineUpJS.builder(arr)
     return builder(arr)
     .deriveColumns()
     .deriveColors()
+    .aggregationStrategy('group+top+item')
     .build(node);
   }
 };

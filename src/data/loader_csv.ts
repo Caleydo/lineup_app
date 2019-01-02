@@ -17,6 +17,7 @@ const lineup = LineUpJS
   .builder(parsed.data)
   .deriveColumns(...parsed.meta.fields)
   .deriveColors()
+  .aggregationStrategy('group+top+item')
   .restore(dump)
   .build(${domVariable});
 `;
@@ -57,6 +58,7 @@ export const CSV_LOADER: IDataLoader = {
           return builder(parsed.data)
             .deriveColumns(...parsed.meta.fields)
             .deriveColors()
+            .aggregationStrategy('group+top+item')
             .defaultRanking()
             .buildTaggle(node);
         }
@@ -77,6 +79,7 @@ export const CSV_LOADER: IDataLoader = {
         return builder(parsed.data)
             .deriveColumns(...parsed.meta.fields)
             .deriveColors()
+            .aggregationStrategy('group+top+item')
             .defaultRanking()
             .buildTaggle(node);
       }
