@@ -59,11 +59,23 @@
         <a class="btn-floating grey lighten-1 halfway-fab disabled export-dataset">
           <i class="material-icons">file_download</i>
         </a>
-        <ul>
+        <ul style="transform: translateY(-22%); right: 55px;">
           <li class="export-option">
             <a href="#" id="createCodePen" class="btn-floating btn-small black waves-effect waves-light tooltipped" data-position="bottom" data-delay="50"
               data-tooltip="Export to CodePen.io">
               <i class="material-icons fa fa-codepen"></i>
+            </a>
+          </li>
+          <li class="export-option">
+            <a href="#" id="createCodeSandbox" class="btn-floating btn-small black waves-effect waves-light tooltipped" data-position="bottom" data-delay="50"
+              data-tooltip="Export to CodeSandbox.io">
+              <i class="material-icons fa fa-code"></i>
+            </a>
+          </li>
+          <li class="export-option">
+            <a href="#" id="createJSFiddle" class="btn-floating btn-small black waves-effect waves-light tooltipped" data-position="bottom" data-delay="50"
+              data-tooltip="Export to JSFiddle">
+              <i class="material-icons fa fa-jsfiddle"></i>
             </a>
           </li>
           <li class="export-option">
@@ -120,7 +132,7 @@
         <a href="http://caleydo.org" target="_blank" rel="noopener">Caleydo</a> project that is maintained by
         <a href="https://www.datavisyn.io" target="_blank" rel="noopener">datavisyn</a>
         under the lead of
-        <a href="https://github.com/datavisyn" target="_blank" rel="noopener">Samuel Gratzl</a>.
+        <a href="https://www.sgratzl.com" target="_blank" rel="noopener">Samuel Gratzl</a>.
       </div>
       <div class="version-info"></div>
     </div>
@@ -130,6 +142,22 @@
     <a href="#" id="downloadHelper" target="_blank" rel="noopener"></a>
     <form id="createCodePenHelper" method="post" action="https://codepen.io/pen/define" target="_blank" rel="noopener">
       <input type="hidden" name="data">
+    </form>
+    <form id="createCodeSandboxHelper" method="post" action="https://codesandbox.io/api/v1/sandboxes/define" target="_blank" rel="noopener">
+      <input type="hidden" name="parameters">
+    </form>
+    <form id="createJSFiddleHelper" method="post" action="https://jsfiddle.net/api/post/library/pure/" target="_blank" rel="noopener">
+      <!--https://docs.jsfiddle.net/api/display-a-fiddle-from-post-->
+      <input type="hidden" name="title">
+      <input type="hidden" name="description">
+      <input type="hidden" name="resources">
+      <input type="hidden" name="html">
+      <input type="hidden" name="css">
+      <input type="hidden" name="js">
+      <input type="hidden" name="wrap" value="d">
+      <input type="hidden" name="normalize_css" value="yes">
+      <input type="hidden" name="css_panel" value="1"><!--SCSS-->
+      <input type="hidden" name="js_panel" value="2"><!--JS 1.7-->
     </form>
 
     <input type="file">

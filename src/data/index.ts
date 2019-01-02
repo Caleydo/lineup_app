@@ -5,6 +5,7 @@ import happiness from './world-happiness-report';
 import soccer from './soccer';
 import aids from './aids/index';
 import { ieeeheat, ieeebars } from './ieee-programming';
+import {simple} from './simple';
 import {listDatasets, listSessions} from './db';
 import JSON_LOADER from './loader_json';
 import CSV_LOADER from './loader_csv';
@@ -21,6 +22,7 @@ const preloaded: IDataset[] = [
   happiness,
   ieeebars,
   ieeeheat,
+  simple
 ];
 
 
