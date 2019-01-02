@@ -1,5 +1,6 @@
 const resolve = require('path').resolve;
 const pkg = require('./package.json');
+const pkgLock = require('./package-lock.json');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -11,15 +12,14 @@ const buildId = `${now.getUTCFullYear()}${prefix(now.getUTCMonth() + 1)}${prefix
 pkg.version = pkg.version.replace('SNAPSHOT', buildId);
 
 const year = (new Date()).getFullYear();
-const banner = '/*! ' + (pkg.title || pkg.name) + ' - v' + pkg.version + ' - ' + year + '\n' +
-  (pkg.homepage ? '* ' + pkg.homepage + '\n' : '') +
-  '* Copyright (c) ' + year + ' ' + pkg.author.name + ';' +
-  ' Licensed ' + pkg.license + '*/\n';
+const banner = `/*! ${pkg.title || pkg.name} - v${pkg.version} - ${year}\n` +
+  (pkg.homepage ? `* ${pkg.homepage}\n` : '') +
+  `* Copyright (c) ${year} ${pkg.author.name}; Licensed ${pkg.license} */\n`;
 
 /**
  * generate a webpack configuration
  */
-module.exports = (env, options) => {
+module.exports = (_env, options) => {
   const dev = options.mode.startsWith('d');
   return {
     node: {
@@ -54,7 +54,8 @@ module.exports = (env, options) => {
         __DEBUG__: JSON.stringify(dev),
         __VERSION__: JSON.stringify(pkg.version),
         __LICENSE__: JSON.stringify(pkg.license),
-        __BUILD_ID__: JSON.stringify(buildId)
+        __BUILD_ID__: JSON.stringify(buildId),
+        __LINEUP_VERSION__: JSON.stringify(pkgLock.dependencies.lineupjs.version)
       }),
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
@@ -151,7 +152,8 @@ module.exports = (env, options) => {
       // ignored: /node_modules/
     },
     devServer: {
-      contentBase: 'demo'
+      contentBase: 'demo',
+      disableHostCheck: true
     }
   };
 };
