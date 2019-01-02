@@ -31,7 +31,8 @@ export class MatrixColumn extends NumbersColumn {
   }
 
   splitBy(stratification: IStratification, provider: IDataProvider) {
-    const base = <NestedColumn>provider.create(createNestedDesc(`${this.label} by ${stratification.name}`));
+    const nestedDesc = createNestedDesc(`${this.label} by ${stratification.name}`);
+    const base = <NestedColumn>provider.create(nestedDesc);
     const w = this.getWidth();
     const totalLength = stratification.colIndexRange.reduce((a, s) => a + (s[1] - s[0]), 0);
 
