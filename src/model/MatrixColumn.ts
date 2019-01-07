@@ -1,9 +1,19 @@
-import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, Column, toolbar } from 'lineupjs';
+import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, toolbar, IDataRow } from 'lineupjs';
 
 export interface IStratification {
+  /**
+   * Stratification name
+   */
   name: string;
+  /**
+   * Name or ICategory array
+   */
   categories: (ICategory | string)[];
-  data: string[];
+  /**
+   * Range of the column indices per group
+   * Each item contains an array with the range (start and end index) for the column array
+   */
+  colIndexRange: number[][];
 }
 
 export interface IMatrixColumnDesc extends INumbersColumnDesc {
@@ -11,7 +21,7 @@ export interface IMatrixColumnDesc extends INumbersColumnDesc {
 }
 
 @toolbar('splitMatrix')
-export default class MatrixColumn extends NumbersColumn {
+export class MatrixColumn extends NumbersColumn {
   constructor(id: string, desc: Readonly<IMatrixColumnDesc>) {
     super(id, desc);
   }
@@ -21,21 +31,25 @@ export default class MatrixColumn extends NumbersColumn {
   }
 
   splitBy(stratification: IStratification, provider: IDataProvider) {
-    const base = <NestedColumn>provider.create(createNestedDesc(`${this.label} by ${stratification.name}`));
+    const nestedDesc = createNestedDesc(`${this.label} by ${stratification.name}`);
+    const base = <NestedColumn>provider.create(nestedDesc);
     const w = this.getWidth();
-    stratification.categories.forEach((group) => {
-      const g = typeof group === 'string' ? { name: group, label: group } : group;
-      const gcol = <MatrixColumn>provider.clone(this);
-      // set group name
-      gcol.setMetaData({ label: g.label || g.name, description: '' });
+    const totalLength = stratification.colIndexRange.reduce((a, s) => a + (s[1] - s[0]), 0);
 
-      const length = stratification.data.reduce((a, s) => a + (s === g.name ? 1 : 0), 0);
-      gcol.setSplicer({
-        length,
-        splice: (vs: any[]) => vs.filter((_v: any, i: number) => stratification.data[i] === g.name)
+    stratification.categories.forEach((group, i: number) => {
+      const g = typeof group === 'string' ? {name: group, label: group} : group;
+
+      const startIndex = stratification.colIndexRange[i][0];
+      const endIndex = stratification.colIndexRange[i][1];
+      const length = endIndex - startIndex;
+
+      const groupDesc = Object.assign({}, this.desc, {
+        label: g.label || g.name,
+        dataLength: length,
+        accessor: (row: IDataRow, desc: any) => row.v[desc.column].slice(startIndex, endIndex)
       });
-      gcol.setWidth(w * length / stratification.data.length);
-
+      const gcol = <MatrixColumn>provider.create(groupDesc);
+      gcol.setWidth(w * length / totalLength);
       base.push(gcol);
     });
 
