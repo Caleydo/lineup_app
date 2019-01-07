@@ -1,4 +1,4 @@
-import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, toolbar } from 'lineupjs';
+import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, toolbar, IDataRow } from 'lineupjs';
 
 export interface IStratification {
   /**
@@ -37,21 +37,19 @@ export class MatrixColumn extends NumbersColumn {
     const totalLength = stratification.colIndexRange.reduce((a, s) => a + (s[1] - s[0]), 0);
 
     stratification.categories.forEach((group, i: number) => {
-      const g = typeof group === 'string' ? { name: group, label: group } : group;
-      const gcol = <MatrixColumn>provider.clone(this);
-      // set group name
-      gcol.setMetaData({ label: g.label || g.name, description: '' });
+      const g = typeof group === 'string' ? {name: group, label: group} : group;
 
       const startIndex = stratification.colIndexRange[i][0];
       const endIndex = stratification.colIndexRange[i][1];
       const length = endIndex - startIndex;
 
-      gcol.setSplicer({
-        length,
-        splice: (vs: any[]) => vs.slice(startIndex, endIndex)
+      const groupDesc = Object.assign({}, this.desc, {
+        label: g.label || g.name,
+        dataLength: length,
+        accessor: (row: IDataRow, desc: any) => row.v[desc.column].slice(startIndex, endIndex)
       });
+      const gcol = <MatrixColumn>provider.create(groupDesc);
       gcol.setWidth(w * length / totalLength);
-
       base.push(gcol);
     });
 
