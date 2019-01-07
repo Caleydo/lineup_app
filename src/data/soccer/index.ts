@@ -146,6 +146,7 @@ const lineup = LineUpJS.builder(parsed.data)
           .column('games')
           //.allColumns()
         )
+        .aggregationStrategy('group+top+item')
         .buildTaggle(node);
     });
   }
