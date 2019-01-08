@@ -23,7 +23,7 @@ const preloaded: IDataset[] = [
   ieeebars,
   ieeeheat,
   simple,
-  big
+  ...big
 ];
 
 

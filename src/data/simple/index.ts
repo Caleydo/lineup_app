@@ -47,29 +47,49 @@ const lineup = LineUpJS.builder(arr)
     }
 
     return builder(arr)
-    .deriveColumns()
-    .deriveColors()
-    .aggregationStrategy('group+top+item')
-    .build(node);
+      .deriveColumns()
+      .deriveColors()
+      .aggregationStrategy('group+top+item')
+      .build(node);
   }
 };
 
+/**
+ * Format number (e.g., 1,000,000 as 1M)
+ * @param num Number to format
+ * @returns Formatted number as string
+ */
+function nFormatter(num: number) {
+  if (num >= 1000000000) {
+     return `${(num / 1000000000).toFixed(1).replace(/\.0$/, '')}G`;
+  }
+  if (num >= 1000000) {
+     return `${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+  }
+  if (num >= 1000) {
+     return `${(num / 1000).toFixed(1).replace(/\.0$/, '')}K`;
+  }
+  return `${num}`;
+}
 
-export const big: IDataset = {
-  id: 'big',
-  type: PRELOADED_TYPE,
-  creationDate: new Date(),
-  name: '1M Random Dataset',
-  image,
-  description: `A random dataset to illustrate LineUp scalability with one million rows`,
-  rawData: '',
-  buildScript(_rawVariable: string, domVariable: string, dumpVariable: string) {
-    return `
+function generateBig(numRows: number, animated: boolean) {
+  const formatedNumRows = nFormatter(numRows);
+
+  return {
+    id: `random-${formatedNumRows}`,
+    type: PRELOADED_TYPE,
+    creationDate: new Date(),
+    name: `${formatedNumRows} Random Dataset`,
+    image,
+    description: `A random dataset to illustrate LineUp scalability with ${formatedNumRows} rows`,
+    rawData: '',
+    buildScript(_rawVariable: string, domVariable: string, dumpVariable: string) {
+      return `
 // generate some data
 const arr = [];
 const cats = ['c1', 'c2', 'c3'];
 const cat2 = ['a1', 'a2'];
-for (let i = 0; i < 1000000; ++i) {
+for (let i = 0; i < ${numRows}; ++i) {
   arr.push({
     label: 'Row ' + i,
     number: Math.random() * 10,
@@ -125,26 +145,26 @@ const p = new LineUpJS.LocalDataProvider(arr, desc, {
 p.restore(${dumpVariable});
 
 const lineup = new LineUpJS.Taggle(${domVariable}, p, {
-  animated: false
+  animated: ${animated}
 });
 lineup.update();
   `;
-  },
-  build(node: HTMLElement) {
-    const arr = [];
-    const cats = ['c1', 'c2', 'c3'];
-    const cat2 = ['a1', 'a2'];
-    for (let i = 0; i < 1000000; ++i) {
-      arr.push({
-        label: `Row ${i}`,
-        number: Math.random() * 10,
-        number2: Math.random() * 10,
-        cat: cats[Math.floor(Math.random() * cats.length)],
-        cat2: cat2[Math.floor(Math.random() * cat2.length)]
-      });
-    }
-    console.log('generated');
-    const desc = [{
+    },
+    build(node: HTMLElement) {
+      const arr = [];
+      const cats = ['c1', 'c2', 'c3'];
+      const cat2 = ['a1', 'a2'];
+      for (let i = 0; i < numRows; ++i) {
+        arr.push({
+          label: `Row ${i}`,
+          number: Math.random() * 10,
+          number2: Math.random() * 10,
+          cat: cats[Math.floor(Math.random() * cats.length)],
+          cat2: cat2[Math.floor(Math.random() * cat2.length)]
+        });
+      }
+      console.log('generated');
+      const desc = [{
         label: 'Label',
         type: 'string',
         column: 'label'
@@ -156,10 +176,10 @@ lineup.update();
         domain: [0, 10]
       },
       {
-      label: 'Number2',
-      type: 'number',
-      column: 'number2',
-      domain: [0, 10]
+        label: 'Number2',
+        type: 'number',
+        column: 'number2',
+        domain: [0, 10]
       },
       {
         label: 'Cat',
@@ -181,18 +201,27 @@ lineup.update();
           color: 'blue'
         }]
       },
-    ];
-    deriveColors(desc);
+      ];
+      deriveColors(desc);
 
-    const p = new LocalDataProvider(arr, desc, {
-      taskExecutor: 'scheduled'
-    });
-    p.deriveDefault();
+      const p = new LocalDataProvider(arr, desc, {
+        taskExecutor: 'scheduled'
+      });
+      p.deriveDefault();
 
-    const instance = new Taggle(node, p, {
-      animated: false
-    });
-    instance.update();
-    return instance;
-  }
-};
+      const instance = new Taggle(node, p, {
+        animated
+      });
+      instance.update();
+      return instance;
+    }
+  };
+}
+
+export const big = [
+  generateBig(100, false),
+  generateBig(1000, false),
+  generateBig(10000, false),
+  generateBig(100000, false),
+  generateBig(1000000, false),
+];
