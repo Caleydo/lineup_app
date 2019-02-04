@@ -33,7 +33,7 @@ export class MatrixColumn extends NumbersColumn {
   splitBy(stratification: IStratification, provider: IDataProvider) {
     const nestedDesc = createNestedDesc(`${this.label} by ${stratification.name}`);
     const base = <NestedColumn>provider.create(nestedDesc);
-    const w = this.getWidth();
+    const totalWidth = this.getWidth();
     const totalLength = stratification.colIndexRange.reduce((a, s) => a + (s[1] - s[0]), 0);
 
     stratification.categories.forEach((group, i: number) => {
@@ -42,14 +42,16 @@ export class MatrixColumn extends NumbersColumn {
       const startIndex = stratification.colIndexRange[i][0];
       const endIndex = stratification.colIndexRange[i][1];
       const length = endIndex - startIndex;
+      const width = totalWidth * length / totalLength;
 
       const groupDesc = Object.assign({}, this.desc, {
         label: g.label || g.name,
         dataLength: length,
-        accessor: (row: IDataRow, desc: any) => row.v[desc.column].slice(startIndex, endIndex)
+        accessor: (row: IDataRow, desc: any) => row.v[desc.column].slice(startIndex, endIndex),
+        width
       });
       const gcol = <MatrixColumn>provider.create(groupDesc);
-      gcol.setWidth(w * length / totalLength);
+      gcol.setWidth(width);
       base.push(gcol);
     });
 
