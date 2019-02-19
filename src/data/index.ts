@@ -1,5 +1,5 @@
 import {IDatasetMeta, PRELOADED_TYPE, IDataset} from './IDataset';
-import { wur, shanghai } from './wur';
+// import { wur, shanghai } from './wur';
 import forbes from './forbes-top-2000-companies';
 import happiness from './world-happiness-report';
 import soccer from './soccer';
@@ -16,8 +16,8 @@ export * from './ui';
 const preloaded: IDataset[] = [
   aids,
   soccer,
-  wur,
-  shanghai,
+  // wur, // hidden due to rendering glitches in overview mode caused by multiple rankings
+  // shanghai,
   forbes,
   happiness,
   ieeebars,
