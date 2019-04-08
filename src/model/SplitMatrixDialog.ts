@@ -1,5 +1,5 @@
 import {ADialog, IRankingHeaderContext, IDialogContext} from 'lineupjs';
-import MatrixColumn from './MatrixColumn';
+import {MatrixColumn} from './MatrixColumn';
 
 
 export default class SplitMatrixDialog extends ADialog {
