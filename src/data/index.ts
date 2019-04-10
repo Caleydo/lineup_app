@@ -74,12 +74,23 @@ export function checkFiles(files: File[]): Promise<IDataset> {
       JSON_LOADER.loadFile(jsonFile[0]),
       CSV_LOADER.loadFile(csvFile[0])
     ])
-    .then((d) => {
+    .then((d: [IDataset | IDatasetMeta, IDataset | IDatasetMeta]): Promise<IDataset | IDatasetMeta> => {
       const jsonDataset = d[0];
       const csvDataset = d[1];
+
+      // existing `build` property indicates IDataset (IDatasetMeta does not have this property)
+      // we can only merge IDatasetMeta from a dump.json with a CSV file (IDataset)
+      if(typeof (<IDataset>jsonDataset).build === 'function') {
+        return Promise.reject('Wrong JSON file! Requires ranking configuration, not a dataset JSON.');
+      }
+
+      // set `csv` type to use `complete()` function of CSV loader
+      jsonDataset.type = 'csv';
+
       // merge the JSON dump (ranking configuration) with the raw CSV data
       jsonDataset.rawData = csvDataset.rawData;
-      return jsonDataset; // use the merged JSON dataset
+
+      return Promise.resolve(jsonDataset); // use the merged JSON dataset
     })
     .then(complete);
 }
