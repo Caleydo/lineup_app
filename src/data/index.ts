@@ -10,7 +10,7 @@ import {listDatasets, listSessions} from './db';
 import JSON_LOADER from './loader_json';
 import CSV_LOADER from './loader_csv';
 
-export {IDataset} from './IDataset';
+export * from './IDataset';
 export * from './ui';
 
 const preloaded: IDataset[] = [

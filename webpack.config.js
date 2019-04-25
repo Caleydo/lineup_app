@@ -64,7 +64,8 @@ module.exports = (_env, options) => {
         chunkFilename: '[id].css'
       }),
       new ForkTsCheckerWebpackPlugin({
-        checkSyntacticErrors: true
+        checkSyntacticErrors: true,
+        silent: process.argv.includes('--json') // avoid output in profiling mode
       })
     ].concat(dev ? [
       // dev plugins
@@ -94,7 +95,7 @@ module.exports = (_env, options) => {
         },
         {
           test: /\.tsx?$/,
-          exclude: /node_modules/,
+          exclude: /node_modules\/(?!lineupjs|lineupengine)\//, // exlude all node_modules except lineupjs and lineupengine
           use: [{
               loader: 'cache-loader'
             },
