@@ -252,7 +252,9 @@ Tooltip.init(document.querySelectorAll('.tooltipped'));
 
 {
   // update version info
-  document.querySelector<HTMLElement>('.version-info')!.innerHTML = `LineUp.js v${__LINEUP_VERSION__}`;
+  if(document.querySelector<HTMLElement>('.version-info')) {
+    document.querySelector<HTMLElement>('.version-info')!.innerHTML = `LineUp.js v${__LINEUP_VERSION__}`;
+  }
 }
 
 document.querySelector<HTMLElement>('.save-session')!.onclick = (evt) => {
