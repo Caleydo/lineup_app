@@ -3,7 +3,7 @@ import {MatrixColumn} from './MatrixColumn';
 
 
 export default class SplitMatrixDialog extends ADialog {
-  constructor(private readonly column: MatrixColumn, dialog: IDialogContext, private readonly ctx: IRankingHeaderContext) {
+  constructor(private readonly column: MatrixColumn, protected readonly dialog: Readonly<IDialogContext>, private readonly ctx: IRankingHeaderContext) {
     super(dialog, {
 
     });
@@ -27,7 +27,20 @@ export default class SplitMatrixDialog extends ADialog {
         return;
       }
       this.column.splitBy(selected, this.ctx.provider);
-      this.destroy();
+
+      this.destroy(); // close dialog since this action cannot be reset or restored
     });
+  }
+
+  protected reset(): void {
+    // no op
+  }
+
+  protected submit(): boolean | undefined {
+    return false;
+  }
+
+  protected cancel(): void {
+    // no op
   }
 }

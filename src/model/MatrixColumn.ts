@@ -1,4 +1,4 @@
-import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, toolbar, IDataRow } from 'lineupjs';
+import { NumbersColumn, INumbersColumnDesc, ICategory, createNestedDesc, IDataProvider, NestedColumn, toolbar, IDataRow, ITypeFactory } from 'lineupjs';
 
 export interface IStratification {
   /**
@@ -22,8 +22,8 @@ export interface IMatrixColumnDesc extends INumbersColumnDesc {
 
 @toolbar('splitMatrix')
 export class MatrixColumn extends NumbersColumn {
-  constructor(id: string, desc: Readonly<IMatrixColumnDesc>) {
-    super(id, desc);
+  constructor(id: string, desc: Readonly<IMatrixColumnDesc>, factory: ITypeFactory) {
+    super(id, desc, factory);
   }
 
   getStratifications() {

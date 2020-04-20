@@ -16,7 +16,7 @@ export const splitMatrix: IToolbarAction = {
     dialog.open();
   },
   options: {
-    shortcut: true,
+    mode: 'menu+shortcut',
     order: 50
   }
 };
